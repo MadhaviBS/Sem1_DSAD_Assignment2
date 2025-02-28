@@ -56,28 +56,38 @@ class AVLTree:
 
     def delete(self, root, event_ID):
         if not root:
-            print("returned root")
             return root
         print("int(event_ID) = ", int(event_ID))
+        print("root.event_ID) = ", int(root.event_ID))
         if int(event_ID) < int(root.event_ID):
+            print("1")
             root.left = self.delete(root.left, event_ID)
         elif event_ID > root.event_ID:
+            print("2")
             root.right = self.delete(root.right, event_ID)
         else:
             if not root.left:
+                print("3")
                 temp = root.right
                 root = None
+                print("temp = ", temp)
                 return temp
             elif not root.right:
+                print("4")
                 temp = root.left
                 root = None
                 return temp
 
             temp = self.min_value_node(root.right)
             root.event_ID = temp.event_ID
+            root.start_time = temp.start_time
+            root.end_time = temp.end_time
+            root.event_name = temp.event_name
+            print("new root root.event_ID = ", root.event_ID)
             root.right = self.delete(root.right, temp.event_ID)
 
         if not root:
+            print("5")
             return root
 
         root.height = 1 + max(self.height(root.left), self.height(root.right))
@@ -85,21 +95,30 @@ class AVLTree:
 
         # Left rotation
         if balance > 1 and self.balance(root.left) >= 0:
+            print("6")
             return self.right_rotate(root)
 
         # Right rotation
         if balance < -1 and self.balance(root.right) <= 0:
+            print("7")
+
             return self.left_rotate(root)
 
         # Left-Right rotation
         if balance > 1 and self.balance(root.left) < 0:
             root.left = self.left_rotate(root.left)
+
+            print("8")
             return self.right_rotate(root)
 
         # Right-Left rotation
         if balance < -1 and self.balance(root.right) > 0:
             root.right = self.right_rotate(root.right)
+            print("9")
+
             return self.left_rotate(root)
+
+        print("10")
 
         return root
 
@@ -164,7 +183,7 @@ class AVLTree:
 
     def addEvent(self, event_ID, start_time, end_time, event_name):
         self.root = self.insert(self.root, event_ID, start_time, end_time, event_name)
-        write_output("Added Book: " + event_ID + " - " + event_name)
+        write_output("ADDED: " + event_ID + " - " + event_name)
 
     def removeEvent(self, event_ID):
         node = self.search(self.root, event_ID)
@@ -173,16 +192,20 @@ class AVLTree:
             write_output(f"Error: Event " + str(event_ID) + " doesnot exist")
         else:
             self.root = self.delete(self.root, event_ID)
-            print("self.root.event_name in removed = ", self.root.event_name)
-            write_output("Removed Book: " + self.root.event_ID + " - " + self.root.event_name)
+            print("self.node.event_name in removed = ", node.event_name)
+            write_output("REMOVED: " + event_ID + " - " + node.event_name)
 
 
     def searchEvent(self, event_ID):
         self.root = self.search(self.root, event_ID)
-        write_output("Searched : " + self.root.event_ID )
-        write_output("---------------------------------------------------------------------------------------------------- " )
-        write_output(self.root.event_ID + " - " + self.root.start_time +" - "+ self.root.end_time + " - "+ self.root.event_name)
-        write_output("---------------------------------------------------------------------------------------------------- " )
+        if not self.root:
+            write_output("Error : Event not found " + event_ID)
+
+        else:
+            write_output("SEARCHED : " + self.root.event_ID +"\n")
+            write_output("---------------------------------------------------------------------------------------------------- \n" )
+            write_output(self.root.event_ID + " - " + self.root.start_time +" - "+ self.root.end_time + " - "+ self.root.event_name)
+            write_output("---------------------------------------------------------------------------------------------------- \n" )
 
     def searchEventByRange(self, start_time="", end_time=""):
         print(" event by range")
@@ -191,7 +214,7 @@ class AVLTree:
 
 
 def write_output(message):
-    f.write(message +"\n")
+    f.write(message)
 
 
 f = open("outputPS04.txt", "w")
