@@ -195,6 +195,13 @@ class AVLTree:
             print("self.node.event_name in removed = ", node.event_name)
             write_output("REMOVED: " + event_ID + " - " + node.event_name)
 
+    def inorder_traversal(self, root):
+        if not root:
+            root = self.root
+        if root:
+            self.inorder_traversal(root.left)
+            print("event_id = ", root.event_ID),
+            self.inorder_traversal(root.right)
 
     def searchEvent(self, event_ID):
         self.root = self.search(self.root, event_ID)
@@ -210,8 +217,19 @@ class AVLTree:
     def searchEventByRange(self, start_time="", end_time=""):
         print(" event by range")
 
+    def in_order_walk(self):
+        """ Inorder traversering, The function returns a list"""
+        current = self.root
+        lst1 = self._inorder(current)
+        return lst1
 
-
+    def _inorder(self, root):
+        lst1 = []
+        if root is not None:
+            lst1 = self._inorder(root.left)
+            lst1.append(root.event_ID)
+            lst1 = lst1 + self._inorder(root.right)
+        return lst1
 
 def write_output(message):
     f.write(message)
@@ -259,17 +277,15 @@ if __name__ == "__main__":
 
         else:
             write_output("Error: Please enter valid action: \n \t \t "
-                         "addBook, borrowBook, returnBook, checkBook, listAvailableBooks, \n "
-                         "\t \t listBooksByAuthor, listPatronsBooks, removeBook ")
-
-    def inorder_traversal(root):
-        if root:
-            inorder_traversal(root.left)
-            print(root.event_ID),
-            inorder_traversal(root.right)
+                         "Add Event, Remove Event, Search, Search Event by Range ")
 
 
-    inorder_traversal(avl.root)
+
+
+    avl.inorder_traversal(avl.root)
+
+    list1 = avl.in_order_walk()
+    print("traversed = ", list1)
 
     f.close()
 
